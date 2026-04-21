@@ -1,0 +1,44 @@
+# ── Core Framework ──────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9        # for file uploads
+
+# ── AI / LangGraph ──────────────────────────────────────────
+langgraph==0.2.28
+langchain==0.3.1
+langchain-groq==0.2.0          # Groq LLM integration
+langchain-community==0.3.1     # SerpAPI tool lives here
+
+# ── Data handling ────────────────────────────────────────────
+pandas==2.2.2
+openpyxl==3.1.5                # Excel (.xlsx) support
+python-dotenv==1.0.1
+
+# ── HTTP / Scraping ──────────────────────────────────────────
+httpx==0.27.2
+beautifulsoup4==4.12.3
+
+# ── Validation ───────────────────────────────────────────────
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# ── Database (Phase 3 — install now, configure later) ────────
+sqlalchemy==2.0.35
+asyncpg==0.29.0
+alembic==1.13.2
+
+# ── Cache / State (Phase 3) ──────────────────────────────────
+redis==5.1.0
+
+# ── Email Sending ─────────────────────────────────────────────────────────────
+sendgrid==6.11.0
+
+# ── Scheduler (follow-ups) ────────────────────────────────────────────────────
+apscheduler==3.10.4
+
+# ── PDF parsing (resume) ─────────────────────────────────────────────────────
+pdfplumber==0.11.4
+
+# ── Database ──────────────────────────────────────────────────────────────────
+asyncpg==0.29.0          # PostgreSQL async driver (production)
+aiosqlite==0.20.0        # SQLite async driver (testing / dev)
