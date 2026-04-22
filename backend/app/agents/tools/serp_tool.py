@@ -35,21 +35,26 @@ def extract_domain(url: str) -> str:
 # ===========================================================================
 
 EXTRACT_SYSTEM = """
-You are a data extractor. Given Google search result snippets about startups/companies,
-extract the actual company names and websites mentioned.
+You are a strict data extractor for a B2B outreach tool.
+Given Google search result snippets, extract ONLY companies that EXACTLY match the search query.
 
-Return ONLY valid JSON array — no markdown:
+Return ONLY valid JSON array — no markdown, no explanation:
 [
-  {"company_name": "Jar", "website": "https://myjar.app", "description": "Micro-savings app"},
-  {"company_name": "Sarvam AI", "website": "https://sarvam.ai", "description": "Indian language LLMs"}
+  {"company_name": "Mistral AI", "website": "https://mistral.ai", "description": "French AI startup", "country": "France", "batch": "YC W24"}
 ]
 
-Rules:
-- Extract ONLY real companies/startups, NOT news sites, aggregators, or article titles
-- Skip: TechCrunch, Inc42, LinkedIn, Wikipedia, Crunchbase, Forbes, topstartups.io etc.
-- If you can't find a real website, omit the company
-- Max 20 companies total
-- Return [] if no real companies found
+STRICT rules:
+- ONLY extract companies that match the GEOGRAPHIC REGION in the query
+  Example: if query says "Europe" → ONLY European companies. NOT Indian, NOT US.
+  Example: if query says "India" → ONLY Indian companies.
+  Example: if query says "YC" → only Y Combinator backed companies.
+- Extract from the actual snippet text — do NOT invent or guess companies
+- Skip aggregator sites: TechCrunch, Inc42, LinkedIn, Wikipedia, Crunchbase, Forbes
+- If website is not clearly mentioned, derive it from company name (company.com)
+- Include "country" field based on where the company is from
+- Return [] if no real matching companies found in the snippets
+- Max 20 companies
+- NEVER return companies from the wrong country/region
 """
 
 async def extract_companies_with_groq(search_results: list[dict], original_query: str) -> list[dict]:
@@ -338,6 +343,30 @@ async def run_discovery(
         print(f"[Discovery] YC API → {len(leads)} leads ✓")
         return leads
 
-    # Strategy 3: Mock
+    # Strategy 3: Mock — filter by detected country from query
+    import re as _re
+    q_lower = original_query.lower()
+    country_kws = {
+        "india": "India", "europe": None, "usa": "United States",
+        "uk": "United Kingdom", "singapore": "Singapore",
+        "nigeria": "Nigeria", "brazil": "Brazil",
+    }
+    detected_country = None
+    for kw, country in country_kws.items():
+        if kw in q_lower:
+            detected_country = country
+            break
+
+    if detected_country == "India":
+        filtered_mock = MOCK_LEADS
+    elif detected_country is not None:
+        # Non-India query — don't return Indian mock data, return empty
+        # Better to return nothing than wrong data
+        print(f"[Discovery] No real data found for {detected_country} — returning empty")
+        print("  Tip: Add SERPAPI_API_KEY to get real results for this region")
+        return []
+    else:
+        filtered_mock = MOCK_LEADS
+
     print("[Discovery] Strategy 3: mock data (add API keys for real data)")
-    return MOCK_LEADS[:max_leads]
+    return filtered_mock[:max_leads]

@@ -12,6 +12,7 @@ from typing import Optional
 from app.db.database            import create_tables
 from app.api.routes.campaigns   import router as campaigns_router
 from app.api.routes.tracking    import router as tracking_router
+from app.api.routes.auth        import router as auth_router
 from app.agents.graph           import graph
 from app.agents.tools.resume_parser import parse_resume
 from app.services.email_sender  import send_email, send_campaign_emails
@@ -57,6 +58,7 @@ app.add_middleware(
 )
 
 # Mount routers
+app.include_router(auth_router)
 app.include_router(campaigns_router)
 app.include_router(tracking_router)
 

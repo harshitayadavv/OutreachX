@@ -34,7 +34,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section style={{ position: "relative", zIndex: 10, textAlign: "center", padding: "120px 24px 80px" }}>
+      <section style={{ position: "relative", zIndex: 10, textAlign: "center", padding: "20px 24px 80px" }}>
         
         {/* Pill badge */}
         <div className="animate-fade-up" style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "rgba(127,119,221,0.12)", border: "1px solid rgba(127,119,221,0.25)", borderRadius: 99, padding: "5px 12px", marginBottom: 32, fontSize: 12, color: "#a5a0ff", fontWeight: 500 }}>
